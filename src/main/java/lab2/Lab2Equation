@@ -1,0 +1,97 @@
+package lab2;
+
+/**
+ * Весь класс представляет собой реализацию уравнения, описанного в пункте "а" лабораторной работы.
+ * Так как уравнение довольно большое, было принято решение разбить его вычисление на несколько методов.
+ */
+public class Lab2Equation {
+    //Массив с интервалами между ошибками. Где элемент массива - X[i] в уравнении.
+    private final int[] errorIntervals;
+    //Кол-во ошибок. Также n.
+    private final int errorsCount;
+    //Результат вычисления левой части уравнения
+    private final double leftEquationResult;
+    //Результат вычисления правой части уравнения
+    private final double rightEquationResult;
+    //В, которое используется в уравнении
+    private final double b;
+    //Числитель правой части уравнения
+    private final double quotientRightEquation;
+    //Знаменатель правой части уравнения;
+    private final double denominatorRightEquation;
+
+    public Lab2Equation(int[] errorIntervals, double b) {
+        this.errorIntervals = errorIntervals;
+        this.errorsCount = errorIntervals.length;
+        this.b = b;
+        this.leftEquationResult = getLeftEquation();
+        this.quotientRightEquation = getQuotientRightEquation();
+        this.denominatorRightEquation = getDenominatorRightEquation();
+        this.rightEquationResult = getRightEquation();
+    }
+
+    /**
+     *
+     * @return Результат уравнения, если перенести все его части влево.
+     */
+    public double getLeftMinusRightEquation(){
+        return leftEquationResult - rightEquationResult;
+    }
+
+    public double getB() {
+        return b;
+    }
+
+    private double getLeftEquation(){
+        double result = 0;
+        for (int i = 1; i <= errorsCount; i++) {
+            result += 1 / (b - i + 1);
+        }
+        return result;
+    }
+
+    private double getRightEquation(){
+        return this.quotientRightEquation / this.denominatorRightEquation;
+    }
+
+    private double getQuotientRightEquation(){
+        return errorsCount * getSumOfErrorIntervals();
+    }
+
+    private double getDenominatorRightEquation(){
+        double result = 0;
+        result += getSumOfErrorIntervals();
+        result *= (this.b + 1);
+        result -= getSumOfErrorIntervals(true);
+
+        return result;
+    }
+
+    /**
+     * Вынесено в отдельный метод, т.к. многократно используется в вычислениях.
+     * @return Сумма всех элементов массива интервалов ошибок.
+     */
+    private double getSumOfErrorIntervals(){
+        double result = 0;
+        for (int i = 0; i < errorsCount; i++) {
+            result += errorIntervals[i];
+        }
+        return result;
+    }
+
+    /**
+     *
+     * @param isMultipliedToIterator true, если нужно перемножать каждый суммируемый элемент с итератором
+     * @return Сумма всех элементов массива интервалов ошибок, перемноженных с их порядковым номером в массиве.
+     */
+    private double getSumOfErrorIntervals(boolean isMultipliedToIterator){
+        double result = 0;
+        if (isMultipliedToIterator){
+            for (int i = 1; i <= errorsCount; i++) {
+                result += errorIntervals[i - 1] * i;
+            }
+        }
+        return result;
+    }
+
+}
