@@ -38,6 +38,22 @@ public class Main {
         System.out.printf("В = %f, К = %f, Хn+1 = %f, tk = %f", b, k, x, t);
 	    
     }
+	
+    private static int[] uploadErrorIntervalsFromFile(String fileName){
+        int[] result;
+        try (FileReader fileReader = new FileReader(fileName)){
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            String[] strings = bufferedReader.readLine().split(";");
+            result = Arrays.stream(strings).mapToInt(Integer::parseInt).toArray();
+            return result;
+        }
+        catch (IOException ex){
+            System.out.println(ex.getMessage());
+        }
+
+        System.out.println("Ошибка при загрузке файла");
+        return new int[]{};
+    }
 
     /**
      * Нахождение корня уравнения, т.е. В, при котором результат будет приблизительно равен 0.
