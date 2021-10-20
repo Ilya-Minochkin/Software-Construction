@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class Main {
+//Точность, с которой вычисляем В
+    private static final double PRECISION = 0.0001;
+
 
     public static void main(String[] args) {
 	//Массив с интервалами между ошибками, данные взяты с таблицы №1 в лабораторной работе
@@ -26,6 +29,14 @@ public class Main {
 	//lowerBorder - решение уравнения при нижней границе В, upperBorder - при верхней границе В.
         Lab2Equation lowerBorder = new Lab2Equation(errorIntervals, lowerB);
         Lab2Equation upperBorder = new Lab2Equation(errorIntervals, upperB);
+	    
+	b = findBWithDividingByHalf(errorIntervals, lowerBorder, upperBorder);
+        k = getK(errorIntervals, b);
+        x = 1 / (k * (b - errorIntervals.length));
+        t = getT(errorIntervals, b, k);
+
+        System.out.printf("В = %f, К = %f, Хn+1 = %f, tk = %f", b, k, x, t);
+	    
     }
 
     /**
@@ -53,5 +64,23 @@ public class Main {
         else{
             return findBWithDividingByHalf(errorIntervals, middle, upperBorder);
         }	
+    }
+	
+    private static double getK(int[] errorIntervals, double b){
+        int n = errorIntervals.length;
+        double result = 0;
+        for (int i = 1; i <= n; i++) {
+            result+= (b - i + 1) * errorIntervals[i - 1];
+        }
+        return n / result;
+    }
+    private static double getT(int[] errorIntervals, double b, double k){
+        int length = errorIntervals.length;
+        double result = 0;
+        for (double i = 1; i <= b - length; i++) {
+            result += 1 / i;
+        }
+
+        return result / k;
     }
 }
